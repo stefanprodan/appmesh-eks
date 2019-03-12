@@ -2,7 +2,7 @@ apiVersion: appmesh.k8s.aws/v1alpha1
 kind: Mesh
 metadata:
   name: test
-  namespace: appmesh-system
+  namespace: test
 spec:
   cloudMapNamespaceName: test
   serviceDiscoveryType: cloudmap-http
