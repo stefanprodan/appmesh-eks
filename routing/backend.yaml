@@ -15,6 +15,21 @@ spec:
       hostName: backend.test.svc.cluster.local
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
+kind: VirtualNode
+metadata:
+  name: backend-primary
+  namespace: test
+spec:
+  meshName: test
+  listeners:
+    - portMapping:
+        port: 9898
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: backend-primary.test.svc.cluster.local
+---
+apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualService
 metadata:
   name: backend.test.svc.cluster.local
@@ -31,4 +46,6 @@ spec:
         action:
           weightedTargets:
             - virtualNodeName: backend
+              weight: 0
+            - virtualNodeName: backend-primary
               weight: 100

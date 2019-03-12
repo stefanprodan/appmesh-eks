@@ -22,6 +22,27 @@ kubectl apply -f ./podinfo
 
 ### Operator bugs
 
+Weighted routing doesn't work:
+
+```yaml
+weightedTargets:
+- virtualNodeName: backend
+  weight: 0
+- virtualNodeName: backend-primary
+  weight: 100
+```
+
+Instead of backend-primary, the traffic is routed to backend:
+
+```bash
+kubectl -n test exec -it frontend-7586b46f8b-fj8q6 sh
+
+~ $ curl -sS backend.test.svc.cluster.local:9898 | grep hostname
+  "hostname": "backend-6d7d4fbbb4-2nkzr",
+```
+
+
+
 If the mesh is in a different namespace the virtual services will error out:
 
 ```
