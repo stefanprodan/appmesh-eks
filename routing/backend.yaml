@@ -1,0 +1,34 @@
+---
+apiVersion: appmesh.k8s.aws/v1alpha1
+kind: VirtualNode
+metadata:
+  name: backend
+  namespace: test
+spec:
+  meshName: test
+  listeners:
+    - portMapping:
+        port: 9898
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: backend.test.svc.cluster.local
+---
+apiVersion: appmesh.k8s.aws/v1alpha1
+kind: VirtualService
+metadata:
+  name: backend.test.svc.cluster.local
+  namespace: test
+spec:
+  meshName: test
+  virtualRouter:
+    name: backend-router
+  routes:
+    - name: backend-route
+      http:
+        match:
+          prefix: /
+        action:
+          weightedTargets:
+            - virtualNodeName: backend
+              weight: 100
