@@ -12,7 +12,7 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostName: backend.test.svc.cluster.local
+      hostName: backend-primary.test.svc.cluster.local
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualNode
@@ -30,6 +30,21 @@ spec:
       hostName: backend-primary.test.svc.cluster.local
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
+kind: VirtualNode
+metadata:
+  name: backend-canary
+  namespace: test
+spec:
+  meshName: global.appmesh-system
+  listeners:
+    - portMapping:
+        port: 9898
+        protocol: http
+  serviceDiscovery:
+    dns:
+      hostName: backend-canary.test.svc.cluster.local
+---
+apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualService
 metadata:
   name: backend.test.svc.cluster.local
@@ -45,10 +60,11 @@ spec:
           prefix: /
         action:
           weightedTargets:
-            - virtualNodeName: backend
+            - virtualNodeName: backend-canary
               weight: 50
             - virtualNodeName: backend-primary
               weight: 50
 
 # aws appmesh describe-route --route-name=backend-route --mesh-name=global --virtual-router-name=backend-router
-# curl -sS backend.test.svc.cluster.local:9898|grep hostname
+# while true; do curl -sS backend.test.svc.cluster.local:9898|grep hostname; sleep 1; done
+# curl -sS backend-canary.test.svc.cluster.local:9898|grep hostname
