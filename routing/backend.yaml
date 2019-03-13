@@ -12,7 +12,7 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostName: backend-primary.test.svc.cluster.local
+      hostName: backend-primary.test
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualNode
@@ -27,7 +27,7 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostName: backend-primary.test.svc.cluster.local
+      hostName: backend-primary.test
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualNode
@@ -42,12 +42,12 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostName: backend-canary.test.svc.cluster.local
+      hostName: backend-canary.test
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualService
 metadata:
-  name: backend.test.svc.cluster.local
+  name: backend.test
   namespace: test
 spec:
   meshName: global.appmesh-system

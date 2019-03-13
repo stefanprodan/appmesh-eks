@@ -12,15 +12,15 @@ spec:
         protocol: http
   serviceDiscovery:
     dns:
-      hostName: frontend.test.svc.cluster.local
+      hostName: frontend.test
   backends:
     - virtualService:
-        virtualServiceName: backend.test.svc.cluster.local
+        virtualServiceName: backend.test
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualService
 metadata:
-  name: frontend.test.svc.cluster.local
+  name: frontend.test
   namespace: test
 spec:
   meshName: global.appmesh-system

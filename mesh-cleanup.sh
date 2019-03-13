@@ -5,8 +5,8 @@ set -x
 MESH=global
 
 echo "Deleting virtual services"
-aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name frontend.test.svc.cluster.local
-aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name backend.test.svc.cluster.local
+aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name frontend.test
+aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name backend.test
 
 echo "Deleting routes"
 aws appmesh delete-route --mesh-name ${MESH} --route-name frontend-route --virtual-router-name frontend-router
@@ -20,6 +20,7 @@ echo "Deleting virtual nodes"
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name frontend
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-primary
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-canary
 
 echo "Deleting mesh"
 aws appmesh delete-mesh --mesh-name ${MESH}
@@ -30,4 +31,3 @@ kubectl delete -f ./mesh/
 
 echo "Deleting workloads"
 kubectl delete -f ./workloads/
-
