@@ -73,7 +73,7 @@ spec:
           runAsUser: 1337
         env:
           - name: "APPMESH_VIRTUAL_NODE_NAME"
-            value: "mesh/test/virtualNode/frontend"
+            value: "mesh/global/virtualNode/frontend"
           - name: "ENVOY_LOG_LEVEL"
             value: "debug"
           - name: "AWS_REGION"
