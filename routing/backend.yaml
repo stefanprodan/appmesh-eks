@@ -5,7 +5,7 @@ metadata:
   name: backend
   namespace: test
 spec:
-  meshName: global
+  meshName: global.appmesh-system
   listeners:
     - portMapping:
         port: 9898
@@ -20,7 +20,7 @@ metadata:
   name: backend-primary
   namespace: test
 spec:
-  meshName: global
+  meshName: global.appmesh-system
   listeners:
     - portMapping:
         port: 9898
@@ -35,7 +35,7 @@ metadata:
   name: backend.test.svc.cluster.local
   namespace: test
 spec:
-  meshName: global
+  meshName: global.appmesh-system
   virtualRouter:
     name: backend-router
   routes:
@@ -46,9 +46,9 @@ spec:
         action:
           weightedTargets:
             - virtualNodeName: backend
-              weight: 0
+              weight: 50
             - virtualNodeName: backend-primary
-              weight: 100
+              weight: 50
 
 # aws appmesh describe-route --route-name=backend-route --mesh-name=global --virtual-router-name=backend-router
 # curl -sS backend.test.svc.cluster.local:9898|grep hostname

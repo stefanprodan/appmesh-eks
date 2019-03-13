@@ -5,7 +5,7 @@ metadata:
   name: frontend
   namespace: test
 spec:
-  meshName: global
+  meshName: global.appmesh-system
   listeners:
     - portMapping:
         port: 9898
@@ -23,7 +23,7 @@ metadata:
   name: frontend.test.svc.cluster.local
   namespace: test
 spec:
-  meshName: global
+  meshName: global.appmesh-system
   virtualRouter:
     name: frontend-router
   routes:
