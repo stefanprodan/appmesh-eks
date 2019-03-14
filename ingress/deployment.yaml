@@ -14,7 +14,6 @@ spec:
         app: ingress
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "9901"
     spec:
       containers:
         - name: nginx
@@ -40,6 +39,9 @@ spec:
               value: "debug"
             - name: "AWS_REGION"
               value: "us-west-2"
+          ports:
+            - containerPort: 9901
+              name: stats
       initContainers:
         - name: proxyinit
           image: 111345817488.dkr.ecr.us-west-2.amazonaws.com/aws-appmesh-proxy-route-manager:latest
