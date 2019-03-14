@@ -17,6 +17,7 @@ aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name fron
 aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name backend-router
 
 echo "Deleting virtual nodes"
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name ingress
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name frontend
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-primary
@@ -29,5 +30,6 @@ echo "Deleting CRs"
 kubectl delete -f ./routing/
 kubectl delete -f ./mesh/
 
-echo "Deleting workloads"
+echo "Deleting ingress and workloads"
+kubectl delete -f ./ingress/
 kubectl delete -f ./workloads/

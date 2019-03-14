@@ -1,0 +1,20 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ingress-config
+  namespace: test
+  labels:
+    app: ingress
+data:
+  nginx.conf: |
+    server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+
+      server_name localhost;
+
+      location / {
+          proxy_pass http://frontend.test:9898/;
+          proxy_http_version 1.1;
+      }
+    }
