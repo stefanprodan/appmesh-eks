@@ -41,6 +41,12 @@ kubectl apply -f ./namespaces
 kubectl apply -f ./operator
 ```
 
+Deploy Prometheus in the `appmesh-system` namespace:
+
+```bash
+kubectl apply -f ./prometheus
+```
+
 Create a mesh called global in the `appmesh-system` namespace:
 
 ```bash
