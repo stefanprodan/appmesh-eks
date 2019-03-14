@@ -32,12 +32,12 @@ spec:
         command:
         - ./podinfo
         - --port=9898
-        - --level=info
+        - --level=debug
         - --random-delay=false
         - --random-error=false
         env:
-        - name: PODINFO_UI_COLOR
-          value: green
+        - name: PODINFO_BACKEND_URL
+          value: "http://backend.test:9898/echo"
         livenessProbe:
           exec:
             command:

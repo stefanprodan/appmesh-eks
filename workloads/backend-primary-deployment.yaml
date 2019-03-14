@@ -32,7 +32,7 @@ spec:
         command:
         - ./podinfo
         - --port=9898
-        - --level=info
+        - --level=debug
         - --random-delay=false
         - --random-error=false
         env:

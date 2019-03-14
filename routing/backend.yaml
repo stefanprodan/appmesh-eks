@@ -66,5 +66,7 @@ spec:
               weight: 50
 
 # aws appmesh describe-route --route-name=backend-route --mesh-name=global --virtual-router-name=backend-router
+# aws appmesh describe-route --route-name=frontend-route --mesh-name=global --virtual-router-name=frontend-router
+# aws appmesh describe-virtual-service --virtual-service-name=frontend.test --mesh-name=global
 # while true; do curl -sS backend.test.svc.cluster.local:9898|grep hostname; sleep 1; done
 # curl -sS backend-canary.test.svc.cluster.local:9898|grep hostname
