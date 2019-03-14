@@ -70,6 +70,40 @@ Verify that the virtual nodes were registered in AppMesh:
 aws appmesh list-virtual-nodes --mesh-name=global
 ```
 
+These virtual nodes should be available:
+
+```json
+{
+    "virtualNodes": [
+        {
+            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/frontend",
+            "meshName": "global",
+            "virtualNodeName": "frontend"
+        },
+        {
+            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/ingress",
+            "meshName": "global",
+            "virtualNodeName": "ingress"
+        },
+        {
+            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend-canary",
+            "meshName": "global",
+            "virtualNodeName": "backend-canary"
+        },
+        {
+            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend-primary",
+            "meshName": "global",
+            "virtualNodeName": "backend-primary"
+        },
+        {
+            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend",
+            "meshName": "global",
+            "virtualNodeName": "backend"
+        }
+    ]
+}
+```
+
 Verify that the routes were registered in AppMesh:
 
 ```bash
