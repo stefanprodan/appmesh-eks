@@ -112,7 +112,7 @@ kubectl apply -f ./prometheus
 Create a mesh called global in the `appmesh-system` namespace:
 
 ```bash
-kubectl apply -f ./mesh
+kubectl apply -f ./appmesh/global.yaml
 ```
 
 Verify that the global mesh is active:
@@ -137,7 +137,7 @@ kubectl apply -f ./namespaces/test.yaml
 Create App Mesh virtual nodes and virtual services:
 
 ```bash
-kubectl apply -f ./routing
+kubectl apply -f ./appmesh
 ```
 
 Verify that the virtual nodes were registered in App Mesh:

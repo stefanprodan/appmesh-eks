@@ -28,8 +28,7 @@ echo "Deleting mesh"
 aws appmesh delete-mesh --mesh-name ${MESH}
 
 echo "Deleting CRs"
-kubectl delete -f ${REPO_ROOT}/routing/
-kubectl delete -f ${REPO_ROOT}/mesh/
+kubectl delete -f ${REPO_ROOT}/appmesh/
 
 echo "Deleting ingress and workloads"
 kubectl delete -f ${REPO_ROOT}/ingress/
