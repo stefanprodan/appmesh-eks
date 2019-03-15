@@ -6,10 +6,10 @@ The App Mesh integration with Kubernetes is made out of the following components
 
 * Kubernetes custom resources
     * `mesh.appmesh.k8s.aws` defines a logical boundary for network traffic between the services 
-    * `virtualnode.appmesh.k8s.aws` defines a logical pointer to a Kubernetes ClusterIP service
-    * `virtualservice.appmesh.k8s.aws` defines the routing rules for a service inside the mesh
-* CRD controller - keeps the custom resources in sync with the AppMesh control plane
-* Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to AppMesh virtual nodes
+    * `virtualnode.appmesh.k8s.aws` defines a logical pointer to a Kubernetes workload
+    * `virtualservice.appmesh.k8s.aws` defines the routing rules for a workload inside the mesh
+* CRD controller - keeps the custom resources in sync with the App Mesh control plane
+* Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to App Mesh virtual nodes
 * Prometheus - collects and stores Envoy's metrics
 
 > Note that this is not an official AWS guide. The APIs are alpha and could change at any time.
@@ -87,7 +87,7 @@ Create the `appmesh-system` namespace:
 kubectl apply -f ./namespaces/appmesh-system.yaml
 ```
 
-Deploy the AppMesh Kubernetes CRDs and controller:
+Deploy the App Mesh Kubernetes CRDs and controller:
 
 ```bash
 kubectl apply -f ./operator/
@@ -99,14 +99,14 @@ Deploy Prometheus in the `appmesh-system` namespace:
 kubectl apply -f ./prometheus
 ```
 
-Install the AppMesh sidecar injector in the `appmesh-system` namespace:
+Install the App Mesh sidecar injector in the `appmesh-system` namespace:
 
 ```bash
 ./injector/install.sh
 ```
 
 The above script generates a certificate signed by Kubernetes CA,
-registers the AppMesh mutating webhook and deploys the injector.
+registers the App Mesh mutating webhook and deploys the injector.
 
 Create a mesh called global in the `appmesh-system` namespace:
 
@@ -139,13 +139,13 @@ Create virtual nodes and services:
 kubectl apply -f ./routing
 ```
 
-Verify that the virtual nodes were registered in AppMesh:
+Verify that the virtual nodes were registered in App Mesh:
 
 ```bash
 aws appmesh list-virtual-nodes --mesh-name=global | jq '.virtualNodes[].virtualNodeName'
 ```
 
-Verify that the routes were registered in AppMesh:
+Verify that the routes were registered in App Mesh:
 
 ```bash
 aws appmesh describe-route --route-name=backend-route \
