@@ -2,6 +2,7 @@
 
 set -x
 
+REPO_ROOT=$(git rev-parse --show-toplevel)
 MESH=global
 
 echo "Deleting virtual services"
@@ -27,9 +28,9 @@ echo "Deleting mesh"
 aws appmesh delete-mesh --mesh-name ${MESH}
 
 echo "Deleting CRs"
-kubectl delete -f ./routing/
-kubectl delete -f ./mesh/
+kubectl delete -f ${REPO_ROOT}/routing/
+kubectl delete -f ${REPO_ROOT}/mesh/
 
 echo "Deleting ingress and workloads"
-kubectl delete -f ./ingress/
-kubectl delete -f ./workloads/
+kubectl delete -f ${REPO_ROOT}/ingress/
+kubectl delete -f ${REPO_ROOT}/workloads/
