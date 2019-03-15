@@ -126,7 +126,7 @@ Status:
     Type:                  Active
 ```
 
-### Deploy workloads in the mesh
+### Deploy demo workloads
 
 Create a test namespace with sidecar injector enabled:
 
@@ -134,11 +134,11 @@ Create a test namespace with sidecar injector enabled:
 kubectl apply -f ./namespaces/test.yaml
 ```
 
-Create App Mesh virtual nodes and virtual services:
+Create the for frontend and backend virtual nodes and virtual services:
 
 ```bash
 kubectl apply -f ./appmesh/frontend.yaml
-kubectl apply -f ./appmesh/frontend.yaml
+kubectl apply -f ./appmesh/backend.yaml
 ```
 
 Verify that the virtual nodes were registered in App Mesh:
@@ -165,7 +165,7 @@ Deploy the frontend and backend workloads:
 kubectl apply -f ./workloads
 ```
 
-### Setup ingress
+### Setup the Envoy ingress
 
 Create the ingress virtual node:
 
