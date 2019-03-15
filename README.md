@@ -10,7 +10,8 @@ The App Mesh integration with Kubernetes is made out of the following components
     * `virtualservice.appmesh.k8s.aws` defines the routing rules for a workload inside the mesh
 * CRD controller - keeps the custom resources in sync with the App Mesh control plane
 * Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to App Mesh virtual nodes
-* Prometheus - collects and stores Envoy's metrics
+* Metrics server - Prometheus instance that collects and stores Envoy's metrics
+* Ingress server - Envoy instance that exposes services onside the mesh
 
 > Note that this is not an official AWS guide. The APIs are alpha and could change at any time.
 
@@ -93,12 +94,6 @@ Deploy the App Mesh Kubernetes CRDs and controller:
 kubectl apply -f ./operator/
 ```
 
-Deploy Prometheus in the `appmesh-system` namespace:
-
-```bash
-kubectl apply -f ./prometheus
-```
-
 Install the App Mesh sidecar injector in the `appmesh-system` namespace:
 
 ```bash
@@ -107,6 +102,12 @@ Install the App Mesh sidecar injector in the `appmesh-system` namespace:
 
 The above script generates a certificate signed by Kubernetes CA,
 registers the App Mesh mutating webhook and deploys the injector.
+
+Deploy the metrics server in the `appmesh-system` namespace:
+
+```bash
+kubectl apply -f ./prometheus
+```
 
 Create a mesh called global in the `appmesh-system` namespace:
 
