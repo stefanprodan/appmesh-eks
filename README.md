@@ -2,6 +2,8 @@
 
 This guide walks you through setting up App Mesh on Amazon Elastic Container Service for Kubernetes (EKS).
 
+![appmesh--eks-overview](https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master/diagrams/appmesh-prometheus.png)
+
 The App Mesh integration with Kubernetes is made out of the following components:
 
 * Kubernetes custom resources
@@ -127,8 +129,6 @@ Status:
 ```
 
 ### Deploy demo workloads
-
-![appmesh-ingress](https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master/diagrams/appmesh-prometheus.png)
 
 Create a test namespace with sidecar injector enabled:
 
