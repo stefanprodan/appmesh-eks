@@ -1,6 +1,21 @@
-# appmesh-demo
+# AppMesh EKS
 
-Install eksctl:
+This guide walks you through setting up AppMesh on Amazon Elastic Container Service for Kubernetes (EKS).
+
+Prerequisites:
+
+* AWS CLI (default region us-west-2)
+* openssl
+* kubectl
+* homebrew
+
+### Create a Kubernetes cluster with eksctl
+
+In order to create an EKS cluster you can use [eksctl](https://eksctl.io).
+eksctl is an open source command-line utility made by Weaveworks in collaboration with Amazon, 
+it's written in Go and is based on EKS CloudFormation templates.
+
+On MacOS you can install eksctl with Homebrew::
 
 ```bash
 brew tap weaveworks/tap
@@ -31,14 +46,40 @@ for AppMesh and attache it to the EKS node instance role:
 }
 ```
 
-Create the `appmesh-system` namespace and deploy the AppMesh operator:
+Install Helm CLI with Homebrew:
 
 ```bash
-# create appmesh-system and test namespaces
-kubectl apply -f ./namespaces
+brew install kubernetes-helm
+```
 
-# deploy the AppMesh operator
-kubectl apply -f ./operator
+Create a service account and a cluster role binding for Tiller:
+
+```bash
+kubectl -n kube-system create sa tiller
+
+kubectl create clusterrolebinding tiller-cluster-rule \
+    --clusterrole=cluster-admin \
+    --serviceaccount=kube-system:tiller 
+```
+
+Deploy Tiller on EKS:
+
+```bash
+helm init --service-account tiller
+```
+
+### Install AppMesh Kubernetes controllers
+
+Create the `appmesh-system` namespace:
+
+```bash
+kubectl apply -f ./namespaces/appmesh-system.yaml
+```
+
+Deploy the AppMesh Kubernetes CRDs and operator:
+
+```bash
+kubectl apply -f ./operator/
 ```
 
 Deploy Prometheus in the `appmesh-system` namespace:
@@ -46,6 +87,15 @@ Deploy Prometheus in the `appmesh-system` namespace:
 ```bash
 kubectl apply -f ./prometheus
 ```
+
+Install the AppMesh sidecar injector in the `appmesh-system` namespace:
+
+```bash
+./injector/install.sh
+```
+
+The above script generates a certificate signed by Kubernetes CA,
+registers the AppMesh mutating webhook and deploys the injector.
 
 Create a mesh called global in the `appmesh-system` namespace:
 
@@ -64,6 +114,14 @@ Status:
     Type:                  Active
 ```
 
+### Demo
+
+Create a test namespace with sidecar injector enabled:
+
+```bash
+kubectl apply -f ./namespaces/test.yaml
+```
+
 Create virtual nodes and services:
 
 ```bash
@@ -73,41 +131,7 @@ kubectl apply -f ./routing
 Verify that the virtual nodes were registered in AppMesh:
 
 ```bash
-aws appmesh list-virtual-nodes --mesh-name=global
-```
-
-These virtual nodes should be available:
-
-```json
-{
-    "virtualNodes": [
-        {
-            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/frontend",
-            "meshName": "global",
-            "virtualNodeName": "frontend"
-        },
-        {
-            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/ingress",
-            "meshName": "global",
-            "virtualNodeName": "ingress"
-        },
-        {
-            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend-canary",
-            "meshName": "global",
-            "virtualNodeName": "backend-canary"
-        },
-        {
-            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend-primary",
-            "meshName": "global",
-            "virtualNodeName": "backend-primary"
-        },
-        {
-            "arn": "arn:aws:appmesh:us-west-2:376248598259:mesh/global/virtualNode/backend",
-            "meshName": "global",
-            "virtualNodeName": "backend"
-        }
-    ]
-}
+aws appmesh list-virtual-nodes --mesh-name=global | jq '.virtualNodes[].virtualNodeName'
 ```
 
 Verify that the routes were registered in AppMesh:
