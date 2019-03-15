@@ -1,26 +1,24 @@
-# AppMesh EKS
+# EKS App Mesh
 
-This guide walks you through setting up AppMesh on Amazon Elastic Container Service for Kubernetes (EKS).
+This guide walks you through setting up App Mesh on Amazon Elastic Container Service for Kubernetes (EKS).
 
-
-The AppMesh integration with Kubernetes is made our of the following components:
+The App Mesh integration with Kubernetes is made out of the following components:
 
 * Kubernetes custom resources
-    * `meshes.appmesh.k8s.aws` defines a logical boundary for network traffic between the services 
-    * `virtualnodes.appmesh.k8s.aws` defines a logical pointer to a Kubernetes ClusterIP service
-    * `virtualservices.appmesh.k8s.aws` defines the routing rules for a service inside the mesh
+    * `mesh.appmesh.k8s.aws` defines a logical boundary for network traffic between the services 
+    * `virtualnode.appmesh.k8s.aws` defines a logical pointer to a Kubernetes ClusterIP service
+    * `virtualservice.appmesh.k8s.aws` defines the routing rules for a service inside the mesh
 * CRD controller - keeps the custom resources in sync with the AppMesh control plane
 * Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to AppMesh virtual nodes
 * Prometheus - collects and stores Envoy's metrics
+
+> Note that this is not an official AWS guide. The APIs are alpha and could change at any time.
 
 Prerequisites:
 
 * AWS CLI (default region us-west-2)
 * openssl
 * kubectl
-* homebrew
-
-> Note that this is not an official AWS guide, the APIs are alpha and could change at any time.
 
 ### Create a Kubernetes cluster with eksctl
 
@@ -81,7 +79,7 @@ Deploy Tiller on EKS:
 helm init --service-account tiller
 ```
 
-### Install AppMesh on EKS
+### Install the App Mesh components
 
 Create the `appmesh-system` namespace:
 
@@ -127,7 +125,7 @@ Status:
     Type:                  Active
 ```
 
-### Ingress demo
+### Setup ingress and deploy workloads in the mesh
 
 Create a test namespace with sidecar injector enabled:
 
