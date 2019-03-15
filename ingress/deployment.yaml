@@ -3,31 +3,72 @@ kind: Deployment
 metadata:
   name: ingress
   namespace: test
+  labels:
+    app: ingress
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: ingress
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
   template:
     metadata:
       labels:
         app: ingress
       annotations:
+        prometheus.io/path: "/stats/prometheus"
+        prometheus.io/port: "9999"
         prometheus.io/scrape: "true"
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
-        - name: nginx
-          image: nginx:1.15
-          imagePullPolicy: Always
+        - name: ingress
+          image: "envoyproxy/envoy-alpine:d920944aed67425f91fc203774aebce9609e5d9a"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_BIND_SERVICE
+          command:
+            - /usr/bin/dumb-init
+            - --
+          args:
+            - /usr/local/bin/envoy
+            - --base-id 30
+            - --v2-config-only
+            - -l
+            - $loglevel
+            - -c
+            - /config/envoy.yaml
           ports:
-            - containerPort: 80
+            - name: admin
+              containerPort: 9999
               protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          livenessProbe:
+            initialDelaySeconds: 5
+            tcpSocket:
+              port: admin
+          readinessProbe:
+            initialDelaySeconds: 5
+            tcpSocket:
+              port: admin
           resources:
-            limits:
-              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi
           volumeMounts:
-            - mountPath: /etc/nginx/conf.d
-              name: config
+            - name: config
+              mountPath: /config
         - name: envoy
           image: 111345817488.dkr.ecr.us-west-2.amazonaws.com/aws-appmesh-envoy:v1.8.0.2-beta
           securityContext:
@@ -59,7 +100,7 @@ spec:
             - name: "APPMESH_ENVOY_EGRESS_PORT"
               value: "15001"
             - name: "APPMESH_APP_PORTS"
-              value: "80"
+              value: "80,443"
             - name: "APPMESH_EGRESS_IGNORED_IP"
               value: "169.254.169.254"
       volumes:
