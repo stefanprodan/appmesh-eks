@@ -11,7 +11,7 @@ The App Mesh integration with Kubernetes is made out of the following components
 * CRD controller - keeps the custom resources in sync with the App Mesh control plane
 * Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to App Mesh virtual nodes
 * Metrics server - Prometheus instance that collects and stores Envoy's metrics
-* Ingress server - Envoy instance that exposes services onside the mesh
+* Ingress server - Envoy instance that exposes services outside the mesh
 
 > Note that this is not an official AWS guide. The APIs are alpha and could change at any time.
 
