@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-app-mesh-inject
+  namespace: appmesh-system
+  labels:
+    app: aws-app-mesh-inject
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aws-app-mesh-inject
+  template:
+    metadata:
+      name: aws-app-mesh-inject
+      labels:
+        app: aws-app-mesh-inject
+    spec:
+      serviceAccountName: aws-app-mesh-inject-sa
+      containers:
+        - name: webhook
+          image: stefanprodan/app-mesh-sidecar-injector:0.0.1-alpha.1
+          env:
+            - name: APPMESH_REGION
+              value: "us-west-2"
+            - name: APPMESH_NAME
+              value: "global"
+            - name: APPMESH_LOG_LEVEL
+              value: debug
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 500Mi
+              cpu: 1000m
+            requests:
+              memory: 64Mi
+              cpu: 100m
+          volumeMounts:
+            - name: webhook-certs
+              mountPath: /etc/webhook/certs
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTPS
+            initialDelaySeconds: 1
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTPS
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          securityContext:
+            readOnlyRootFilesystem: true
+      volumes:
+        - name: webhook-certs
+          secret:
+            secretName: aws-app-mesh-inject
