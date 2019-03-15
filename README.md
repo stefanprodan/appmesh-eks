@@ -128,7 +128,7 @@ Status:
 
 ### Deploy demo workloads
 
-![appmesh-overview](https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master/docs/diagrams/appmesh-ingress.png)
+![appmesh-overview](https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master/diagrams/appmesh-ingress.png)
 
 Create a test namespace with sidecar injector enabled:
 
