@@ -126,7 +126,7 @@ Status:
     Type:                  Active
 ```
 
-### Setup ingress and deploy workloads in the mesh
+### Deploy workloads in the mesh
 
 Create a test namespace with sidecar injector enabled:
 
@@ -137,7 +137,8 @@ kubectl apply -f ./namespaces/test.yaml
 Create App Mesh virtual nodes and virtual services:
 
 ```bash
-kubectl apply -f ./appmesh
+kubectl apply -f ./appmesh/frontend.yaml
+kubectl apply -f ./appmesh/frontend.yaml
 ```
 
 Verify that the virtual nodes were registered in App Mesh:
@@ -158,6 +159,20 @@ aws appmesh describe-route --route-name=frontend-route \
     --virtual-router-name=frontend-router
 ```
 
+Deploy the frontend and backend workloads:
+
+```bash
+kubectl apply -f ./workloads
+```
+
+### Setup ingress
+
+Create the ingress virtual node:
+
+```bash
+kubectl apply -f ./appmesh/ingress.yaml
+```
+
 Deploy the ingress and the load balancer service:
 
 ```bash
@@ -170,12 +185,6 @@ Find the ingress public address:
 kubectl -n test describe svc/ingress | grep Ingress
 
 LoadBalancer Ingress:     yyy-xx.us-west-2.elb.amazonaws.com
-```
-
-Deploy the frontend and backend workloads:
-
-```bash
-kubectl apply -f ./workloads
 ```
 
 Verify that the ingress -> frontend -> backend mesh communication is working:
