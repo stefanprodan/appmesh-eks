@@ -169,6 +169,12 @@ kubectl apply -f ./workloads
 
 ### Setup the Envoy ingress
 
+In order to expose the frontend application outside the mesh you'll be using an Envoy ingress and an AWS classic load balancer.
+The ingress binds to an internet domain and forwards the calls into the mesh through the App Mesh sidecar.
+If the frontend service is not available due to a rolling update or a node restart,
+the ingress will [retry](https://github.com/stefanprodan/appmesh-eks/blob/master/ingress/config.yaml#L41) 
+the calls for a short period of time.
+
 Create the ingress virtual node:
 
 ```bash
