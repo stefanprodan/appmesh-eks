@@ -134,7 +134,7 @@ Create a test namespace with sidecar injector enabled:
 kubectl apply -f ./namespaces/test.yaml
 ```
 
-Create virtual nodes and services:
+Create App Mesh virtual nodes and virtual services:
 
 ```bash
 kubectl apply -f ./routing
@@ -158,19 +158,24 @@ aws appmesh describe-route --route-name=frontend-route \
     --virtual-router-name=frontend-router
 ```
 
-Deploy the ingress, frontend and backend workloads:
+Deploy the ingress and the load balancer service:
 
 ```bash
 kubectl apply -f ./ingress
-kubectl apply -f ./workloads
 ```
 
-Find the load balancer address:
+Find the ingress public address:
 
 ```bash
 kubectl -n test describe svc/ingress | grep Ingress
 
 LoadBalancer Ingress:     yyy-xx.us-west-2.elb.amazonaws.com
+```
+
+Deploy the frontend and backend workloads:
+
+```bash
+kubectl apply -f ./workloads
 ```
 
 Verify that the ingress -> frontend -> backend mesh communication is working:
