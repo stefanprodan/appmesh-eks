@@ -2,6 +2,17 @@
 
 This guide walks you through setting up AppMesh on Amazon Elastic Container Service for Kubernetes (EKS).
 
+
+The AppMesh integration with Kubernetes is made our of the following components:
+
+* Kubernetes custom resources
+    * `meshes.appmesh.k8s.aws` defines a logical boundary for network traffic between the services 
+    * `virtualnodes.appmesh.k8s.aws` defines a logical pointer to a Kubernetes ClusterIP service
+    * `virtualservices.appmesh.k8s.aws` defines the routing rules for a service inside the mesh
+* CRD controller - keeps the custom resources in sync with the AppMesh control plane
+* Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to AppMesh virtual nodes
+* Prometheus - collects and stores Envoy's metrics
+
 Prerequisites:
 
 * AWS CLI (default region us-west-2)
@@ -9,13 +20,15 @@ Prerequisites:
 * kubectl
 * homebrew
 
+> Note that this is not an official AWS guide, the APIs are alpha and could change at any time.
+
 ### Create a Kubernetes cluster with eksctl
 
 In order to create an EKS cluster you can use [eksctl](https://eksctl.io).
 eksctl is an open source command-line utility made by Weaveworks in collaboration with Amazon, 
 it's written in Go and is based on EKS CloudFormation templates.
 
-On MacOS you can install eksctl with Homebrew::
+On MacOS you can install eksctl with Homebrew:
 
 ```bash
 brew tap weaveworks/tap
@@ -68,7 +81,7 @@ Deploy Tiller on EKS:
 helm init --service-account tiller
 ```
 
-### Install AppMesh Kubernetes controllers
+### Install AppMesh on EKS
 
 Create the `appmesh-system` namespace:
 
@@ -76,7 +89,7 @@ Create the `appmesh-system` namespace:
 kubectl apply -f ./namespaces/appmesh-system.yaml
 ```
 
-Deploy the AppMesh Kubernetes CRDs and operator:
+Deploy the AppMesh Kubernetes CRDs and controller:
 
 ```bash
 kubectl apply -f ./operator/
@@ -114,7 +127,7 @@ Status:
     Type:                  Active
 ```
 
-### Demo
+### Ingress demo
 
 Create a test namespace with sidecar injector enabled:
 
@@ -170,7 +183,6 @@ curl -vd 'test' http://yyy-xx.us-west-2.elb.amazonaws.com/api/echo
 < server: envoy
 < x-envoy-upstream-service-time: 5
 ```
-
 
 
 
