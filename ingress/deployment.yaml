@@ -22,6 +22,9 @@ spec:
         prometheus.io/path: "/stats/prometheus"
         prometheus.io/port: "9999"
         prometheus.io/scrape: "true"
+        # dummy port to exclude ingress from mesh traffic
+        # only egress should go over the mesh
+        appmesh.k8s.aws/ports: "444"
     spec:
       terminationGracePeriodSeconds: 30
       containers:
