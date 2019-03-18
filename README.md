@@ -82,6 +82,13 @@ Deploy Tiller on EKS:
 helm init --service-account tiller
 ```
 
+Install Horizontal Pod Autoscaler (HPA) metrics provider:
+
+```bash
+helm upgrade -i  metrics-server stable/metrics-server \
+--namespace kube-system
+```
+
 ### Install the App Mesh components
 
 Create the `appmesh-system` namespace:
