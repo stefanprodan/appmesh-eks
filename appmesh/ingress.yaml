@@ -2,7 +2,7 @@
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualNode
 metadata:
-  name: ingress
+  name: ingress-test
   namespace: test
 spec:
   meshName: global.appmesh-system

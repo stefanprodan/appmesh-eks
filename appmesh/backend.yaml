@@ -2,7 +2,7 @@
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualNode
 metadata:
-  name: backend
+  name: backend-test
   namespace: test
 spec:
   meshName: global.appmesh-system
@@ -13,36 +13,6 @@ spec:
   serviceDiscovery:
     dns:
       hostName: backend-primary.test
----
-apiVersion: appmesh.k8s.aws/v1alpha1
-kind: VirtualNode
-metadata:
-  name: backend-primary
-  namespace: test
-spec:
-  meshName: global.appmesh-system
-  listeners:
-    - portMapping:
-        port: 9898
-        protocol: http
-  serviceDiscovery:
-    dns:
-      hostName: backend-primary.test
----
-apiVersion: appmesh.k8s.aws/v1alpha1
-kind: VirtualNode
-metadata:
-  name: backend-canary
-  namespace: test
-spec:
-  meshName: global.appmesh-system
-  listeners:
-    - portMapping:
-        port: 9898
-        protocol: http
-  serviceDiscovery:
-    dns:
-      hostName: backend-canary.test
 ---
 apiVersion: appmesh.k8s.aws/v1alpha1
 kind: VirtualService
@@ -52,21 +22,22 @@ metadata:
 spec:
   meshName: global.appmesh-system
   virtualRouter:
-    name: backend-router
+    name: backend-router-test
   routes:
-    - name: backend-route
+    - name: backend-route-test
       http:
         match:
           prefix: /
         action:
           weightedTargets:
-            - virtualNodeName: backend-canary
-              weight: 50
-            - virtualNodeName: backend-primary
-              weight: 50
+            - virtualNodeName: backend-test
+              weight: 100
 
 # aws appmesh describe-route --route-name=backend-route --mesh-name=global --virtual-router-name=backend-router
 # aws appmesh describe-route --route-name=frontend-route --mesh-name=global --virtual-router-name=frontend-router
 # aws appmesh describe-virtual-service --virtual-service-name=frontend.test --mesh-name=global
 # while true; do curl -sS backend.test.svc.cluster.local:9898|grep hostname; sleep 1; done
 # curl -sS backend-canary.test.svc.cluster.local:9898|grep hostname
+
+# aws appmesh describe-route --route-name=frontend-test-route --mesh-name=global --virtual-router-name=frontend-test-router
+# aws appmesh describe-virtual-node --virtual-node-name=frontend-primary-test --mesh-name=global

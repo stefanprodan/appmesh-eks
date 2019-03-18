@@ -10,19 +10,17 @@ aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name fr
 aws appmesh delete-virtual-service --mesh-name ${MESH} --virtual-service-name backend.test
 
 echo "Deleting routes"
-aws appmesh delete-route --mesh-name ${MESH} --route-name frontend-route --virtual-router-name frontend-router
-aws appmesh delete-route --mesh-name ${MESH} --route-name backend-route --virtual-router-name backend-router
+aws appmesh delete-route --mesh-name ${MESH} --route-name frontend-route-test --virtual-router-name frontend-router-test
+aws appmesh delete-route --mesh-name ${MESH} --route-name backend-route-test --virtual-router-name backend-router-test
 
 echo "Deleting virtual routers"
-aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name frontend-router
-aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name backend-router
+aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name frontend-router-test
+aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name backend-router-test
 
 echo "Deleting virtual nodes"
-aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name ingress
-aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name frontend
-aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend
-aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-primary
-aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-canary
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name ingress-test
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name frontend-test
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-test
 
 echo "Deleting mesh"
 aws appmesh delete-mesh --mesh-name ${MESH}

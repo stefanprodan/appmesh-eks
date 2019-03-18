@@ -12,3 +12,4 @@ spec:
     - name: http
       protocol: TCP
       port: 9090
+  #type: LoadBalancer
