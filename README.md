@@ -60,6 +60,8 @@ for AppMesh and attache it to the EKS node instance role:
 }
 ```
 
+### Enable horizontal pod auto scaling
+
 Install Helm CLI with Homebrew:
 
 ```bash
@@ -85,8 +87,15 @@ helm init --service-account tiller
 Install Horizontal Pod Autoscaler (HPA) metrics provider:
 
 ```bash
-helm upgrade -i  metrics-server stable/metrics-server \
+helm upgrade -i metrics-server stable/metrics-server \
 --namespace kube-system
+```
+
+After a minute, the metrics API should report CPU and memory usage for pods.
+You can very the metrics API with:
+
+```bash
+kubectl -n kube-system top pods
 ```
 
 ### Install the App Mesh components
