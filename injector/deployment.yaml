@@ -19,10 +19,8 @@ spec:
       serviceAccountName: aws-app-mesh-inject-sa
       containers:
         - name: webhook
-          image: stefanprodan/app-mesh-sidecar-injector:0.0.1-alpha.11
+          image: stefanprodan/app-mesh-sidecar-injector:0.0.1-alpha.15
           env:
-            - name: APPMESH_REGION
-              value: "us-west-2"
             - name: APPMESH_NAME
               value: "global"
             - name: APPMESH_LOG_LEVEL
