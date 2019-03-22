@@ -18,6 +18,6 @@ spec:
       serviceAccountName: app-mesh-sa
       containers:
         - name: app-mesh-controller
-          image: stefanprodan/app-mesh-controller:0.0.1-alpha.2
+          image: stefanprodan/app-mesh-controller:0.0.1-alpha.5
           ports:
             - containerPort: 10555
