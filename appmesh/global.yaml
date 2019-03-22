@@ -4,5 +4,4 @@ metadata:
   name: global
   namespace: appmesh-system
 spec:
-  cloudMapNamespaceName: test
-  serviceDiscoveryType: cloudmap-http
+  serviceDiscoveryType: dns
