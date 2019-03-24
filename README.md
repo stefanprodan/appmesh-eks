@@ -11,13 +11,45 @@ The App Mesh integration with Kubernetes is made out of the following components
 
 > Note that this is not an official AWS guide
 
-Prerequisites:
+### Prerequisites
 
 * AWS CLI (default region us-west-2)
 * openssl
 * kubectl
 * curl
 
+### Install
+
+Install eksctl:
+
+```bash
+brew tap weaveworks/tap
+brew install weaveworks/tap/eksctl
+```
+
+Create an EKS cluster:
+
+```bash
+eksctl create cluster --name=appmesh \
+--region=us-west-2 \
+--appmesh-access
+```
+
+Install the App Mesh components:
+
+```bash
+curl -fsSL https://git.io/get-app-mesh-eks.sh | bash -
+```
+
+Installer tasks:
+
+* create the `appmesh-system` namespace
+* generate a certificate signed by Kubernetes CA
+* register the App Mesh mutating webhook
+* deploy the App Mesh webhook
+* deploy the App Mesh CRDs
+* deploy the App Mesh controller
+* create a mesh called `global` in the `appmesh-system` namespace
 
 
 
