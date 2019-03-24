@@ -18,9 +18,11 @@ aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name fron
 aws appmesh delete-virtual-router --mesh-name ${MESH} --virtual-router-name backend-router-test
 
 echo "Deleting virtual nodes"
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name ingress
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name ingress-test
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name frontend-test
 aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name backend-test
+aws appmesh delete-virtual-node --mesh-name ${MESH} --virtual-node-name flagger-loadtester-test
 
 echo "Deleting mesh"
 aws appmesh delete-mesh --mesh-name ${MESH}
