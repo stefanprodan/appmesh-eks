@@ -21,13 +21,13 @@ fi
 
 tmpdir=$(mktemp -d)
 
-REPO_URL=https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master
+REPO_URL=https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master/templates
 
 echo "downloading templates in tmpdir ${tmpdir}"
-curl -sS ${REPO_URL}/templates/namespace.yaml -o ${tmpdir}/namespace.yaml
-curl -sS ${REPO_URL}/templates/webhook.yaml.tlp -o ${tmpdir}/webhook.yaml.tpl
-curl -sS ${REPO_URL}/templates/controller.yaml.tlp -o ${tmpdir}/controller.yaml.tpl
-curl -sS ${REPO_URL}/templates/mesh.yaml.tlp -o ${tmpdir}/mesh.yaml.tpl
+curl -sS ${REPO_URL}/namespace.yaml -o ${tmpdir}/namespace.yaml
+curl -sS ${REPO_URL}/webhook.yaml.tpl -o ${tmpdir}/webhook.yaml.tpl
+curl -sS ${REPO_URL}/controller.yaml.tpl -o ${tmpdir}/controller.yaml.tpl
+curl -sS ${REPO_URL}/mesh.yaml.tpl -o ${tmpdir}/mesh.yaml.tpl
 
 export CONTROLLER_IMAGE=stefanprodan/app-mesh-controller:0.0.1-alpha.6
 export WEBHOOK_IMAGE=stefanprodan/app-mesh-sidecar-injector:0.0.1-alpha.15
