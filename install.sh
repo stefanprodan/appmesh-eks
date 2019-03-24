@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -o errexit
+set -e
 
 echo "checking prerequisites: openssl, kubectl and curl"
 
@@ -36,20 +36,21 @@ export APPMESH_LOG_LEVEL=debug
 
 echo "processing templates"
 eval "cat <<EOF
-$(<${tmpdir}/templates/webhook.yaml.tpl)
+$(<${tmpdir}/webhook.yaml.tpl)
 EOF
 " > ${tmpdir}/webhook.yaml
 
 eval "cat <<EOF
-$(<${tmpdir}/templates/mesh.yaml.tpl)
+$(<${tmpdir}/mesh.yaml.tpl)
 EOF
 " > ${tmpdir}/mesh.yaml
 
 eval "cat <<EOF
-$(<${tmpdir}/templates/controller.yaml.tpl)
+$(<${tmpdir}/controller.yaml.tpl)
 EOF
 " > ${tmpdir}/controller.yaml
 
+echo "creating appmesh-system namespace"
 kubectl apply -f ${tmpdir}/namespace.yaml
 
 service=aws-app-mesh-inject
