@@ -1,18 +1,61 @@
 #!/bin/bash
 
-REPO_ROOT=$(git rev-parse --show-toplevel)
+set -o errexit
 
-service=aws-app-mesh-inject
-secret=aws-app-mesh-inject
-namespace=appmesh-system
+echo "checking prerequisites: openssl, kubectl and curl"
 
 if [ ! -x "$(command -v openssl)" ]; then
     echo "openssl not found"
     exit 1
 fi
 
-csrName=${service}.${namespace}
+if [ ! -x "$(command -v kubectl)" ]; then
+    echo "kubectl not found"
+    exit 1
+fi
+
+if [ ! -x "$(command -v curl)" ]; then
+    echo "curl not found"
+    exit 1
+fi
+
 tmpdir=$(mktemp -d)
+
+REPO_URL=https://raw.githubusercontent.com/stefanprodan/appmesh-eks/master
+
+echo "downloading templates in tmpdir ${tmpdir}"
+curl -sS ${REPO_URL}/templates/namespace.yaml -o ${tmpdir}/namespace.yaml
+curl -sS ${REPO_URL}/templates/webhook.yaml.tlp -o ${tmpdir}/webhook.yaml.tpl
+curl -sS ${REPO_URL}/templates/controller.yaml.tlp -o ${tmpdir}/controller.yaml.tpl
+curl -sS ${REPO_URL}/templates/mesh.yaml.tlp -o ${tmpdir}/mesh.yaml.tpl
+
+export CONTROLLER_IMAGE=stefanprodan/app-mesh-controller:0.0.1-alpha.6
+export WEBHOOK_IMAGE=stefanprodan/app-mesh-sidecar-injector:0.0.1-alpha.15
+export APPMESH_NAME=global
+export APPMESH_LOG_LEVEL=debug
+
+echo "processing templates"
+eval "cat <<EOF
+$(<${tmpdir}/templates/webhook.yaml.tpl)
+EOF
+" > ${tmpdir}/webhook.yaml
+
+eval "cat <<EOF
+$(<${tmpdir}/templates/mesh.yaml.tpl)
+EOF
+" > ${tmpdir}/mesh.yaml
+
+eval "cat <<EOF
+$(<${tmpdir}/templates/controller.yaml.tpl)
+EOF
+" > ${tmpdir}/controller.yaml
+
+kubectl apply -f ${tmpdir}/namespace.yaml
+
+service=aws-app-mesh-inject
+secret=aws-app-mesh-inject
+namespace=appmesh-system
+csrName=${service}.${namespace}
 echo "creating certs in tmpdir ${tmpdir} "
 
 cat <<EOF >> ${tmpdir}/csr.conf
@@ -87,13 +130,48 @@ kubectl create secret generic ${secret} \
 # get API server ca bundle
 export CA_BUNDLE=$(kubectl get configmap -n kube-system extension-apiserver-authentication -o=jsonpath='{.data.client-ca-file}' | base64 | tr -d '\n')
 
-if [[ -z $CA_BUNDLE ]]; then
+if [[ -z ${CA_BUNDLE} ]]; then
 	cc=$(kubectl config view --raw --flatten -o json | jq -r '.contexts[] | select(.name == "'$(kubectl config current-context)'") | .context.cluster')
 	export CA_BUNDLE=$(kubectl config view --raw --flatten -o json | jq -r '.clusters[] | select(.name == "'${cc}'") | .cluster."certificate-authority-data"')
 fi
 
-# register webhook
-sed "s/CA_BUNDLE/${CA_BUNDLE}/" ${REPO_ROOT}/injector/webhook.yaml.tpl  | kubectl apply -f -
+cat <<EOF | kubectl apply -f -
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: aws-app-mesh-inject
+webhooks:
+  - name: aws-app-mesh-inject.aws.amazon.com
+    clientConfig:
+      service:
+        name: aws-app-mesh-inject
+        namespace: appmesh-system
+        path: "/"
+      caBundle: "${CA_BUNDLE}"
+    rules:
+      - operations: ["CREATE","UPDATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods"]
+    failurePolicy: Ignore
+    namespaceSelector:
+      matchLabels:
+        appmesh.k8s.aws/sidecarInjectorWebhook: enabled
+EOF
 
-# deploy webhook
-kubectl apply -f  ${REPO_ROOT}/injector/
+echo "installing aws-app-mesh-inject"
+kubectl apply -f ${tmpdir}/webhook.yaml
+
+echo "waiting for aws-app-mesh-inject to start"
+kubectl -n appmesh-system rollout status deployment aws-app-mesh-inject
+
+echo "installing aws-app-mesh-controller"
+kubectl apply -f ${tmpdir}/controller.yaml
+
+echo "waiting for aws-app-mesh-controller to start"
+kubectl -n appmesh-system rollout status deployment aws-app-mesh-controller
+
+echo "creating global mesh"
+kubectl apply -f ${tmpdir}/mesh.yaml
+
+echo "App Mesh installed successfully"
