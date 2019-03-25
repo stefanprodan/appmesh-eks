@@ -1,4 +1,4 @@
-# EKS App Mesh
+# App Mesh installer for EKS
 
 The App Mesh integration with Kubernetes is made out of the following components:
 
@@ -9,16 +9,13 @@ The App Mesh integration with Kubernetes is made out of the following components
 * CRD controller - keeps the custom resources in sync with the App Mesh control plane
 * Admission controller - injects the Envoy sidecar and assigns Kubernetes pods to App Mesh virtual nodes
 
-> Note that this is not an official AWS guide
-
 ### Prerequisites
 
 * AWS CLI (default region us-west-2)
 * openssl
 * kubectl
 * curl
-
-### Install
+* homebrew
 
 Install eksctl:
 
@@ -35,21 +32,25 @@ eksctl create cluster --name=appmesh \
 --appmesh-access
 ```
 
+### Install
+
 Install the App Mesh components:
 
 ```bash
 curl -fsSL https://git.io/get-app-mesh-eks.sh | bash -
 ```
 
-Installer tasks:
+The installer script will do the following:
 
-* create the `appmesh-system` namespace
-* generate a certificate signed by Kubernetes CA
-* register the App Mesh mutating webhook
-* deploy the App Mesh webhook
-* deploy the App Mesh CRDs
-* deploy the App Mesh controller
-* create a mesh called `global` in the `appmesh-system` namespace
+* creates the `appmesh-system` namespace
+* generates a certificate signed by Kubernetes CA
+* registers the App Mesh mutating webhook
+* deploys the App Mesh webhook
+* deploys the App Mesh CRDs
+* deploys the App Mesh controller
+* creates a mesh called `global` in the `appmesh-system` namespace
 
+
+> Note that this is not an official AWS installer
 
 
