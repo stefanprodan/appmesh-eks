@@ -6,11 +6,14 @@ metadata:
 spec:
   group: appmesh.k8s.aws
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
       storage: true
-  version: v1alpha1
-  scope: Namespaced
+    - name: v1alpha1
+      served: true
+      storage: false
+  version: v1beta1
+  scope: Cluster
   names:
     plural: meshes
     singular: mesh
@@ -22,8 +25,6 @@ spec:
     status: {}
   validation:
     openAPIV3Schema:
-      required:
-        - spec
       properties:
         spec:
           properties:
@@ -66,10 +67,13 @@ metadata:
 spec:
   group: appmesh.k8s.aws
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
       storage: true
-  version: v1alpha1
+    - name: v1alpha1
+      served: true
+      storage: false
+  version: v1beta1
   scope: Namespaced
   names:
     plural: virtualnodes
@@ -174,10 +178,13 @@ metadata:
 spec:
   group: appmesh.k8s.aws
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
       storage: true
-  version: v1alpha1
+    - name: v1alpha1
+      served: true
+      storage: false
+  version: v1beta1
   scope: Namespaced
   names:
     plural: virtualservices
