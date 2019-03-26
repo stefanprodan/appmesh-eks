@@ -14,6 +14,7 @@ The App Mesh integration with Kubernetes is made out of the following components
 * AWS CLI (default region us-west-2)
 * openssl
 * kubectl
+* jq
 * curl
 * homebrew
 

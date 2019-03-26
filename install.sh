@@ -2,7 +2,7 @@
 
 set -e
 
-echo "checking prerequisites: openssl, kubectl and curl"
+echo "checking prerequisites: openssl, kubectl, jq and curl"
 
 if [ ! -x "$(command -v openssl)" ]; then
     echo "openssl not found"
@@ -11,6 +11,12 @@ fi
 
 if [ ! -x "$(command -v kubectl)" ]; then
     echo "kubectl not found"
+    exit 1
+fi
+
+
+if [ ! -x "$(command -v jq)" ]; then
+    echo "curl not found"
     exit 1
 fi
 
@@ -132,8 +138,7 @@ kubectl create secret generic ${secret} \
 export CA_BUNDLE=$(kubectl get configmap -n kube-system extension-apiserver-authentication -o=jsonpath='{.data.client-ca-file}' | base64 | tr -d '\n')
 
 if [[ -z ${CA_BUNDLE} ]]; then
-	cc=$(kubectl config view --raw --flatten -o json | jq -r '.contexts[] | select(.name == "'$(kubectl config current-context)'") | .context.cluster')
-	export CA_BUNDLE=$(kubectl config view --raw --flatten -o json | jq -r '.clusters[] | select(.name == "'${cc}'") | .cluster."certificate-authority-data"')
+	export CA_BUNDLE=$(kubectl config view --raw -o json --minify | jq -r '.clusters[0].cluster."certificate-authority-data"' | tr -d '"')
 fi
 
 cat <<EOF | kubectl apply -f -
