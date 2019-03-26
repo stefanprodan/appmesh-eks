@@ -25,10 +25,12 @@ brew tap weaveworks/tap
 brew install weaveworks/tap/eksctl
 ```
 
-Create an EKS cluster:
+Create an EKS cluster with the App Mesh IAM role:
 
 ```bash
 eksctl create cluster --name=appmesh \
+--nodes=2 \
+--node-type=m5.xlarge \
 --region=us-west-2 \
 --appmesh-access
 ```
@@ -46,9 +48,9 @@ The installer script will do the following:
 * creates the `appmesh-system` namespace
 * generates a certificate signed by Kubernetes CA
 * registers the App Mesh mutating webhook
-* deploys the App Mesh webhook
+* deploys the App Mesh webhook in `appmesh-system` namespace
 * deploys the App Mesh CRDs
-* deploys the App Mesh controller
+* deploys the App Mesh controller `appmesh-system` namespace
 * creates a mesh called `global` in the `appmesh-system` namespace
 
 
