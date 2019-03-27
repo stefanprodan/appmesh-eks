@@ -35,8 +35,8 @@ curl -sS ${REPO_URL}/webhook.yaml.tpl -o ${tmpdir}/webhook.yaml.tpl
 curl -sS ${REPO_URL}/controller.yaml.tpl -o ${tmpdir}/controller.yaml.tpl
 curl -sS ${REPO_URL}/mesh.yaml.tpl -o ${tmpdir}/mesh.yaml.tpl
 
-export CONTROLLER_IMAGE=stefanprodan/app-mesh-controller:0.0.2
-export WEBHOOK_IMAGE=stefanprodan/app-mesh-sidecar-injector:0.0.2
+export CONTROLLER_IMAGE=602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/app-mesh-controller:v0.1.0
+export WEBHOOK_IMAGE=602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-app-mesh-inject:v0.1.0
 export APPMESH_NAME=global
 export APPMESH_LOG_LEVEL=debug
 
