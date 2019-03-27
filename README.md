@@ -14,18 +14,9 @@ App Mesh add-ons:
 * [Flagger](https://github.com/weaveworks/flagger) - progressive delivery operator (automated canary deployments and A/B testing)
 * [Prometheus](https://github.com/prometheus/prometheus) - monitoring system and time series database
 
-### Prerequisites
+### EKS
 
-* AWS CLI (default region us-west-2)
-* openssl
-* kubectl
-* jq
-* curl
-* homebrew
-
-### Create an ELK cluster
-
-Install eksctl:
+Install [eksctl](https://github.com/weaveworks/eksctl):
 
 ```bash
 brew tap weaveworks/tap
@@ -42,9 +33,9 @@ eksctl create cluster --name=appmesh \
 --appmesh-access
 ```
 
-### Install App Mesh
+### App Mesh
 
-Install the App Mesh components:
+Install the App Mesh components (requires openssl and jq):
 
 ```bash
 curl -fsSL https://git.io/get-app-mesh-eks.sh | bash -
@@ -60,7 +51,7 @@ The installer script will do the following:
 * deploys the App Mesh controller `appmesh-system` namespace
 * creates a mesh called `global`
 
-### Add-ons
+### App Mesh Add-ons
 
 * [Install Flagger and Prometheus on EKS and App Mesh](https://docs.flagger.app/install/flagger-install-on-eks-appmesh)
 * [App Mesh automated canary deployments](https://docs.flagger.app/usage/appmesh-progressive-delivery)
