@@ -37,6 +37,8 @@ curl -sS ${REPO_URL}/mesh.yaml.tpl -o ${tmpdir}/mesh.yaml.tpl
 
 export CONTROLLER_IMAGE=602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/app-mesh-controller:v0.1.0
 export WEBHOOK_IMAGE=602401143452.dkr.ecr.us-west-2.amazonaws.com/amazon/aws-app-mesh-inject:v0.1.0
+export SIDECAR_IMAGE=111345817488.dkr.ecr.us-west-2.amazonaws.com/aws-appmesh-envoy:v1.9.0.0-prod
+export INIT_IMAGE=111345817488.dkr.ecr.us-west-2.amazonaws.com/aws-appmesh-proxy-route-manager:latest
 export APPMESH_NAME=global
 export APPMESH_LOG_LEVEL=debug
 

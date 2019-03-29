@@ -70,6 +70,10 @@ spec:
             - name: APPMESH_LOG_LEVEL
               value: $APPMESH_LOG_LEVEL
           imagePullPolicy: IfNotPresent
+          command:
+            - ./appmeshinject
+            - -sidecar-image=$SIDECAR_IMAGE
+            - -init-image=$INIT_IMAGE
           resources:
             requests:
               memory: 64Mi
